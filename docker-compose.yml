@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_iventory
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: baby_shop
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345678
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+    restart: always
+
+volumes:
+  db_data:

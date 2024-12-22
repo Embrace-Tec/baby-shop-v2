@@ -1,0 +1,26 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    <persistence-unit name="babyshopPU">
+        <class>com.babyshop.entity.Sale</class>
+        <class>com.babyshop.entity.Category</class>
+        <class>com.babyshop.entity.Invoice</class>
+        <class>com.babyshop.entity.Item</class>
+        <class>com.babyshop.entity.Payment</class>
+        <class>com.babyshop.entity.Product</class>
+        <class>com.babyshop.entity.Purchase</class>
+        <class>com.babyshop.entity.Supplier</class>
+        <properties>
+            <property name="javax.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/inventory"/>
+            <property name="hibernate.connection.username" value="root"/>
+            <property name="hibernate.connection.password" value="12345678"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
