@@ -146,7 +146,7 @@ public class ProductModel implements ProductDao {
             entityManager.getTransaction().begin();
             Product p = entityManager.find(Product.class, product.getId());
             if (p != null) {
-                p.setQuantity(p.getQuantity() - product.getQuantity());
+                p.setQuantity(/*p.getQuantity() - */product.getQuantity());
                 entityManager.merge(p);
             }
             entityManager.getTransaction().commit();

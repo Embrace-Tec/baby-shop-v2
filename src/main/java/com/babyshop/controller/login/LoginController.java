@@ -76,7 +76,7 @@ public class LoginController implements Initializable {
 
                     ((Node) (event.getSource())).getScene().getWindow().hide();
 
-                    String type = "admin";
+                    String type = "employee";
 
                     switch (type) {
                         case "admin":
