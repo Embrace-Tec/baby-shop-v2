@@ -26,6 +26,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.text.DateFormatSymbols;
+import java.time.Month;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -92,8 +93,9 @@ public class AdminController implements Initializable {
         XYChart.Series series = new XYChart.Series();
 
         for (Invoice i : invoiceModel.getInvoices()) {
-            String month = convertDate(i.getDate());
-            series.getData().add(new XYChart.Data(month, i.getPayable()));
+            Month month = i.getDate().getMonth();
+//            String month = convertDate(i.getDate());
+            series.getData().add(new XYChart.Data(month.toString(), i.getPayable()));
         }
 
         series.setName("Sales");

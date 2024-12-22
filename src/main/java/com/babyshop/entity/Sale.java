@@ -2,6 +2,7 @@ package com.babyshop.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sales")
@@ -26,13 +27,13 @@ public class Sale implements Serializable {
     private double price;
     @Column(name = "total")
     private double total;
-    @Column(name = "datetime", insertable=false)
-    private String date;
+    @Column(name = "datetime")
+    private LocalDateTime date;
 
     public Sale() {
     }
 
-    public Sale(long id, Invoice invoice, Product product, double quantity, double price, double total, String date) {
+    public Sale(long id, Invoice invoice, Product product, double quantity, double price, double total, LocalDateTime date) {
         this.id = id;
         this.invoice = invoice;
         this.product = product;
@@ -42,12 +43,13 @@ public class Sale implements Serializable {
         this.date = date;
     }
 
-    public Sale(Invoice invoice, Product product, double quantity, double price, double total) {
+    public Sale(Invoice invoice, Product product, double quantity, double price, double total, LocalDateTime date) {
         this.invoice = invoice;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
         this.total = total;
+        this.date = date;
     }
 
     public long getId() {
@@ -98,23 +100,23 @@ public class Sale implements Serializable {
         this.total = total;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
     @Override
     public String toString() {
-        return "Sale{" + "id=" + id + 
-                ", invoice=" + invoice + 
-                ", product=" + product + 
-                ", quantity=" + quantity + 
-                ", price=" + price + 
-                ", total=" + total + 
-                ", date=" + date + '}';
+        return "Sale{" + "id=" + id +
+               ", invoice=" + invoice +
+               ", product=" + product +
+               ", quantity=" + quantity +
+               ", price=" + price +
+               ", total=" + total +
+               ", date=" + date + '}';
     }
-    
+
 }

@@ -2,6 +2,7 @@ package com.babyshop.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "invoices")
@@ -27,15 +28,15 @@ public class Invoice implements Serializable {
     private double paid;
     @Column(name = "returned")
     private double returned;
-    @Column(name = "datetime", insertable=false)
-    private String date;
+    @Column(name = "datetime")
+    private LocalDateTime date;
     
     public Invoice() {
         
     }
 
     public Invoice(String id, Employee employee, double total, double vat, 
-            double discount, double payable, double paid, double returned, String date) {
+            double discount, double payable, double paid, double returned, LocalDateTime date) {
         this.id = id;
         this.employee = employee;
         this.total = total;
@@ -123,11 +124,11 @@ public class Invoice implements Serializable {
         this.returned = returned;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }

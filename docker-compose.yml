@@ -9,8 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 12345678
       MYSQL_DATABASE: baby_shop
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 12345678
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: 12345678
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
     restart: always

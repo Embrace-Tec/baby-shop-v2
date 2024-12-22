@@ -35,6 +35,8 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.text.DateFormatSymbols;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -172,7 +174,9 @@ public class ProductController implements Initializable, ProductInterface {
 
             for (Sale s : sales) {
 
-                String month = convertDate(s.getDate());
+                Month month = s.getDate().getMonth();
+                System.out.println(month.toString());
+//                String month = convertDate(s.getDate().toString()); // changed
                 series.getData().add(new XYChart.Data(month, s.getTotal()));
             }
 

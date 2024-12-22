@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class InvoiceController implements Initializable {
@@ -73,7 +74,8 @@ public class InvoiceController implements Initializable {
                     payment.getDiscount(),
                     payment.getPayable(),
                     paid,
-                    retail
+                    retail,
+                    LocalDateTime.now() //get current date time
             );
 
             invoiceModel.saveInvoice(invoice);
@@ -90,7 +92,8 @@ public class InvoiceController implements Initializable {
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
                         i.getUnitPrice(),
-                        i.getTotal()
+                        i.getTotal(),
+                        LocalDateTime.now()
                 );
 
                 salesModel.saveSale(sale);
