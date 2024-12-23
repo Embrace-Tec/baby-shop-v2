@@ -26,7 +26,7 @@ public class Sale implements Serializable {
     private double price;
     @Column(name = "total")
     private double total;
-    @Column(name = "datetime", insertable=false)
+    @Column(name = "datetime")
     private String date;
 
     public Sale() {
@@ -48,6 +48,15 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.price = price;
         this.total = total;
+    }
+
+    public Sale(Invoice invoice, Product product, double quantity, double price, double total,String date) {
+        this.invoice = invoice;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
+        this.total = total;
+        this.date = date;
     }
 
     public long getId() {

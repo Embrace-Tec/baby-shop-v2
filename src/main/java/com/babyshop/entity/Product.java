@@ -11,6 +11,8 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+    @Column(name = "itemCode")
+    private String itemCode;
     @Column(name = "name")
     private String productName;
     @Column(name = "price")
@@ -19,11 +21,9 @@ public class Product implements Serializable {
     private double quantity;
     @Column(name = "description")
     private String description;
-    
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "categoryId")
     private Category category;
-    
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "supplierId")
     private Supplier supplier;
@@ -31,9 +31,10 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(long id, String productName, double price, 
+    public Product(long id,String itemCode, String productName, double price,
             double quantity, String description, Category category, Supplier supplier) {
         this.id = id;
+        this.itemCode = itemCode;
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
@@ -42,8 +43,9 @@ public class Product implements Serializable {
         this.supplier = supplier;
     }
 
-    public Product(String productName, double price, 
+    public Product(String itemCode,String productName, double price,
             double quantity, String description, Category category, Supplier supplier) {
+        this.itemCode = itemCode;
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
@@ -74,6 +76,14 @@ public class Product implements Serializable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public double getQuantity() {

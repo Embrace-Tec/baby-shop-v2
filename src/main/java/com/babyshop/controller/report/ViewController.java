@@ -34,8 +34,6 @@ public class ViewController implements Initializable {
         dateLabel.setText("Date: " + invoice.getDate());
         employeeField.setText(invoice.getEmployee().getUserName());
         totalField.setText(String.valueOf(invoice.getTotal()));
-        vatField.setText(String.valueOf(invoice.getVat()));
-        discountField.setText(String.valueOf(invoice.getDiscount()));
         payableField.setText(String.valueOf(invoice.getPayable()));
         paidField.setText(String.valueOf(invoice.getPaid()));
         returnedField.setText(String.valueOf(invoice.getReturned()));

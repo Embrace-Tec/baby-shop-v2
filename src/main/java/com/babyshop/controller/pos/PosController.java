@@ -46,7 +46,7 @@ public class PosController implements Initializable, ProductInterface {
     @FXML
     private TextArea descriptionArea;
     @FXML
-    private TextField subTotalField, discountField, vatField, netPayableField;
+    private TextField subTotalField,netPayableField;
     @FXML
     private Button addButton, removeButton, paymentButton;
     @FXML
@@ -65,7 +65,7 @@ public class PosController implements Initializable, ProductInterface {
 
         loadData();
 
-        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         productTableView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showDetails(newValue));
         productTableView.setItems(PRODUCTLIST);
@@ -96,9 +96,9 @@ public class PosController implements Initializable, ProductInterface {
                         return true;
                     }
                     String lowerCaseFilter = newValue.toLowerCase();
-                    if (product.getProductName().toLowerCase().contains(lowerCaseFilter)) {
+                    if (product.getItemCode().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
-                    } else if (product.getDescription().toLowerCase().contains(lowerCaseFilter)) {
+                    } else if (product.getProductName().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     }
                     return false;
@@ -163,7 +163,6 @@ public class PosController implements Initializable, ProductInterface {
 
     private void resetInvoice() {
         subTotalField.setText("0.00");
-        vatField.setText("0.00");
         netPayableField.setText("0.00");
     }
 
@@ -214,11 +213,9 @@ public class PosController implements Initializable, ProductInterface {
 
         if (subTotalPrice > 0) {
             paymentButton.setDisable(false);
-            double vat = (double) subTotalPrice * 0.025;
-            double netPayablePrice = (double) (Math.abs((subTotalPrice + vat) - 5));
-
+            double vat = (double) subTotalPrice;
+            double netPayablePrice = Math.abs((subTotalPrice));
             subTotalField.setText(String.valueOf(subTotalPrice));
-            vatField.setText(String.valueOf(vat));
             netPayableField.setText(String.valueOf(netPayablePrice));
         }
     }
@@ -228,8 +225,6 @@ public class PosController implements Initializable, ProductInterface {
 
         Payment payment = new Payment(
                 Double.parseDouble(subTotalField.getText().trim()),
-                Double.parseDouble(vatField.getText().trim()),
-                Double.parseDouble(discountField.getText().trim()),
                 Double.parseDouble(netPayableField.getText().trim())
         );
 
@@ -307,7 +302,7 @@ public class PosController implements Initializable, ProductInterface {
     @FXML
     public void logoutAction(ActionEvent event) throws Exception {
         ((Node) (event.getSource())).getScene().getWindow().hide();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Admin.fxml"));
         Stage stage = new Stage();
         root.setOnMousePressed((MouseEvent e) -> {
             xOffset = e.getSceneX();
@@ -319,7 +314,7 @@ public class PosController implements Initializable, ProductInterface {
         });
 
         Scene scene = new Scene(root);
-        stage.setTitle("Inventory:: Version 1.0");
+        stage.setTitle("අම්මා බබා");
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);

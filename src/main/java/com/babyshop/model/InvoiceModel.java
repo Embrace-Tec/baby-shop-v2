@@ -65,14 +65,9 @@ public class InvoiceModel implements InvoiceDao {
     @Override
     public void saveInvoice(Invoice invoice) {
         try {
-            // Begin transaction
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
-
-            // Save the invoice
             entityManager.persist(invoice);
-
-            // Commit transaction
             transaction.commit();
         } catch (Exception ex) {
             ex.printStackTrace();

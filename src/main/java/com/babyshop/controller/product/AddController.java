@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 public class AddController implements Initializable, ProductInterface {
 
     @FXML
-    private TextField nameField, priceField, quantityField;
+    private TextField nameField, priceField, quantityField,itemCodeField;
     @FXML
     private TextArea descriptionArea;
     @FXML
@@ -53,6 +53,7 @@ public class AddController implements Initializable, ProductInterface {
             Category category = categoryModel.getCategory(categoryBox.getSelectionModel().getSelectedIndex() + 1);
             Supplier supplier = supplierModel.getSupplier(supplierBox.getSelectionModel().getSelectedIndex() + 1);
             Product product = new Product(
+                    itemCodeField.getText(),
                     nameField.getText(),
                     Double.parseDouble(priceField.getText()),
                     Double.parseDouble(quantityField.getText()),
