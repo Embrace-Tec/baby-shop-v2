@@ -70,13 +70,12 @@ public class LoginController implements Initializable {
             String username = usernameField.getText().trim();
             String password = passwordField.getText().trim();
 
-            if (username.equals("admin")) {
-
-                if (password.equals("admin")) {
+            if (model.checkUser(username)) {
+                if (model.checkPassword(username, password)) {
 
                     ((Node) (event.getSource())).getScene().getWindow().hide();
 
-                    String type = "admin";
+                    String type = model.getEmployeeType(username);
 
                     switch (type) {
                         case "admin":
@@ -97,7 +96,6 @@ public class LoginController implements Initializable {
             }
         }
     }
-
     private void windows(String path, String title) throws Exception {
 
         Parent root = FXMLLoader.load(getClass().getResource(path));

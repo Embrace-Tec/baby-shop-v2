@@ -141,12 +141,11 @@ public class ProductModel implements ProductDao {
 
     @Override
     public void decreaseProduct(Product product) {
-
         try {
             entityManager.getTransaction().begin();
             Product p = entityManager.find(Product.class, product.getId());
             if (p != null) {
-                p.setQuantity(p.getQuantity() - product.getQuantity());
+                p.setQuantity(product.getQuantity());
                 entityManager.merge(p);
             }
             entityManager.getTransaction().commit();

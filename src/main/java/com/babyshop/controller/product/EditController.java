@@ -72,6 +72,7 @@ public class EditController implements Initializable, ProductInterface {
             Supplier supplier = supplierModel.getSupplier(supplierBox.getSelectionModel().getSelectedIndex() + 1);
             Product editedProduct = new Product(
                     product.getId(),
+                    product.getItemCode(),
                     nameField.getText(),
                     Double.parseDouble(priceField.getText()),
                     Double.parseDouble(quantityField.getText()),

@@ -2,6 +2,9 @@ package com.babyshop.controller.pos;
 
 
 import com.babyshop.entity.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.sql.Timestamp;
 import com.babyshop.model.EmployeeModel;
 import com.babyshop.model.InvoiceModel;
 import com.babyshop.model.ProductModel;
@@ -61,25 +64,25 @@ public class InvoiceController implements Initializable {
 
         if (validateInput()) {
             double paid = Double.parseDouble(paidAmountField.getText().trim());
-            double retail = Math.abs(paid - netPrice);
+            double retail =0;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(new Date());
 
-            String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+            String invoiceId = formattedDate + "-" + new Timestamp(System.currentTimeMillis()).getTime();
 
             Invoice invoice = new Invoice(
                     invoiceId,
                     employeeModel.getEmployee(2),
                     payment.getSubTotal(),
-                    payment.getVat(),
-                    payment.getDiscount(),
                     payment.getPayable(),
                     paid,
-                    retail
+                    retail,
+                    formattedDate
             );
 
             invoiceModel.saveInvoice(invoice);
 
             for (Item i : items) {
-
                 Product p = productModel.getProductByName(i.getItemName());
                 double quantity = p.getQuantity() - i.getQuantity();
                 p.setQuantity(quantity);
@@ -90,7 +93,8 @@ public class InvoiceController implements Initializable {
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
                         i.getUnitPrice(),
-                        i.getTotal()
+                        i.getTotal(),
+                        formattedDate
                 );
 
                 salesModel.saveSale(sale);
