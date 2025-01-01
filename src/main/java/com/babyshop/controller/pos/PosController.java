@@ -67,7 +67,7 @@ public class PosController implements Initializable, ProductInterface {
 
         loadData();
 
-        productColumn.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
         productTableView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showDetails(newValue));
         productTableView.setItems(PRODUCTLIST);
