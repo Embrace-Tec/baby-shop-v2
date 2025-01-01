@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.util.Locale;
@@ -47,7 +48,7 @@ public class AdminController implements Initializable {
     private BarChart<String, Double> productsChart;
     @FXML
     CategoryAxis pxAxis;
-    
+
     @FXML
     private PieChart stockChart;
 
@@ -121,16 +122,16 @@ public class AdminController implements Initializable {
         int d = Integer.parseInt(date.substring(5, 7));
         return new DateFormatSymbols().getMonths()[d - 1];
     }
-    
-    private void loadStockChart(){
-    
+
+    private void loadStockChart() {
+
         ObservableList<PieChart.Data> lists = FXCollections.observableArrayList();
-        
-        for(Product p : productModel.getProducts()){
-        
+
+        for (Product p : productModel.getProducts()) {
+
             lists.add(new PieChart.Data(p.getProductName(), p.getQuantity()));
         }
-        
+
         stockChart.getData().addAll(lists);
     }
 
@@ -148,7 +149,8 @@ public class AdminController implements Initializable {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
-        setWindow(event);
+//        setWindow(event);
+        loadPos();
     }
 
     @FXML
@@ -209,7 +211,7 @@ public class AdminController implements Initializable {
 
     @FXML
     public void setWindow(ActionEvent event) throws Exception {
-        ((Node) (event.getSource())).getScene().getWindow().hide();
+//        ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
         Stage stage = new Stage();
         root.setOnMousePressed((MouseEvent e) -> {
@@ -223,8 +225,19 @@ public class AdminController implements Initializable {
         Scene scene = new Scene(root);
         stage.setTitle("අම්මා බබා");
         stage.getIcons().add(new Image("/images/logo.png"));
-        stage.initStyle(StageStyle.UNDECORATED);
+//        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
+        stage.show();
+    }
+
+    private void loadPos() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 }

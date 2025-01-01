@@ -42,7 +42,7 @@ public class ReportController implements Initializable, ReportInterface {
     @FXML
     private TableColumn<Invoice, String> employeeColumn, dateColumn;
     @FXML
-    private TableColumn<Invoice, Double> totalColumn, vatColumn, discountColumn, 
+    private TableColumn<Invoice, Double> totalColumn, vatColumn, discountColumn,
             payableColumn, paidColumn, returnedColumn;
     @FXML
     private TextField searchField;
@@ -52,7 +52,7 @@ public class ReportController implements Initializable, ReportInterface {
 
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     @FXML
     private Button menu;
     @FXML
@@ -61,7 +61,7 @@ public class ReportController implements Initializable, ReportInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model = new InvoiceModel();
-        
+
         drawerAction();
         loadData();
 
@@ -102,15 +102,15 @@ public class ReportController implements Initializable, ReportInterface {
             reportTable.setItems(sortedData);
         });
     }
-    
-    private void loadData(){
-    
+
+    private void loadData() {
+
         if (!REPORTLIST.isEmpty()) {
             REPORTLIST.clear();
         }
         REPORTLIST.addAll(model.getInvoices());
     }
-    
+
     private void drawerAction() {
 
         TranslateTransition openNav = new TranslateTransition(new Duration(350), drawer);
@@ -134,13 +134,13 @@ public class ReportController implements Initializable, ReportInterface {
     public void adminAction(ActionEvent event) throws Exception {
         windows("/fxml/Admin.fxml", "Admin", event);
     }
-    
+
     @FXML
     public void productAction(ActionEvent event) throws Exception {
 
         windows("/fxml/Admin.fxml", "Admin", event);
     }
-    
+
     @FXML
     public void categoryAction(ActionEvent event) throws Exception {
 
@@ -149,8 +149,19 @@ public class ReportController implements Initializable, ReportInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        loadPos();
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    private void loadPos() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
@@ -163,7 +174,7 @@ public class ReportController implements Initializable, ReportInterface {
     public void supplierAction(ActionEvent event) throws Exception {
         windows("/fxml/Supplier.fxml", "Supplier", event);
     }
-    
+
     @FXML
     public void staffAction(ActionEvent event) throws Exception {
         windows("/fxml/Employee.fxml", "Employee", event);

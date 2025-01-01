@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -49,7 +50,7 @@ public class SalesController implements Initializable, SaleInterface {
 
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     @FXML
     private Button menu;
     @FXML
@@ -58,23 +59,23 @@ public class SalesController implements Initializable, SaleInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model = new SalesModel();
-        
+
         drawerAction();
         loadData();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        productColumn.setCellValueFactory((TableColumn.CellDataFeatures<Sale, String> p) -> 
+        productColumn.setCellValueFactory((TableColumn.CellDataFeatures<Sale, String> p) ->
                 new SimpleStringProperty(p.getValue().getProduct().getProductName()));
-        
+
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         salesTable.setItems(SALELIST);
-        
+
         filterData();
-        
+
         deleteButton
                 .disableProperty()
                 .bind(Bindings.isEmpty(salesTable.getSelectionModel().getSelectedItems()));
@@ -94,7 +95,7 @@ public class SalesController implements Initializable, SaleInterface {
                     } else if (sale.getProduct().getCategory().getType().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     }
-                    
+
                     return false;
                 });
             });
@@ -105,14 +106,14 @@ public class SalesController implements Initializable, SaleInterface {
         });
     }
 
-    private void loadData(){
-    
+    private void loadData() {
+
         if (!SALELIST.isEmpty()) {
             SALELIST.clear();
         }
         SALELIST.addAll(model.getSales());
     }
-    
+
     private void drawerAction() {
 
         TranslateTransition openNav = new TranslateTransition(new Duration(350), drawer);
@@ -132,18 +133,18 @@ public class SalesController implements Initializable, SaleInterface {
         });
     }
 
-    
+
     @FXML
     public void adminAction(ActionEvent event) throws Exception {
         windows("/fxml/Admin.fxml", "Admin", event);
     }
-    
+
     @FXML
     public void productAction(ActionEvent event) throws Exception {
 
         windows("/fxml/Product.fxml", "Product", event);
     }
-    
+
     @FXML
     public void categoryAction(ActionEvent event) throws Exception {
 
@@ -152,10 +153,21 @@ public class SalesController implements Initializable, SaleInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
-
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+        loadPos();
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
     }
-    
+
+    private void loadPos() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
+    }
+
     @FXML
     public void reportAction(ActionEvent event) throws Exception {
         windows("/fxml/Report.fxml", "Report", event);
@@ -165,7 +177,7 @@ public class SalesController implements Initializable, SaleInterface {
     public void supplierAction(ActionEvent event) throws Exception {
         windows("/fxml/Supplier.fxml", "Supplier", event);
     }
-    
+
     @FXML
     public void staffAction(ActionEvent event) throws Exception {
         windows("/fxml/Employee.fxml", "Employee", event);

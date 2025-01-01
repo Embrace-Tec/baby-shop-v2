@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ProductController implements Initializable, ProductInterface {
     @FXML
     private TableColumn<Product, Long> idColumn;
     @FXML
-    private TableColumn<Product, String> categoryColumn,nameColumn, supplierColumn, descriptionColumn;
+    private TableColumn<Product, String> categoryColumn, nameColumn, supplierColumn, descriptionColumn;
     @FXML
     private TableColumn<Product, Double> priceColumn, quantityColumn;
     @FXML
@@ -201,8 +202,19 @@ public class ProductController implements Initializable, ProductInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        loadPos();
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    private void loadPos() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML

@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -154,8 +155,19 @@ public class EmployeeController implements Initializable, EmployeeInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        loadPos();
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    private void loadPos() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
