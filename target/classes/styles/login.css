@@ -23,7 +23,7 @@
 }
 
 .left-box{
-    -fx-background-color: rgba(0, 136, 145, 1);
+    -fx-background-color: #0098DB;
 }
 
 .right-box{
@@ -56,7 +56,29 @@
 }
 
 .buttons {
-    -fx-text-fill: #000000;
-    -fx-font-family: Verdana;
-    -fx-background-color: rgb(205,203,166);
+    -fx-text-fill: #ffffff; /* White text for contrast */
+    -fx-font-family: Verdana; /* Font */
+    -fx-font-size: 12px; /* Font size */
+    -fx-font-weight: bold; /* Font weight */
+    -fx-background-color: linear-gradient(to bottom, #00a6f0, #008cc9); /* Gradient based on #0098DB */
+    -fx-border-color: #006b94; /* Border color darker shade of #0098DB */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
+    -fx-border-radius: 8px; /* Rounded corners for border */
+    -fx-background-radius: 8px; /* Rounded corners for background */
+    -fx-padding: 6 20 6 20; /* Increased padding for a larger button */
+    -fx-cursor: hand; /* Pointer cursor on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 2, 2); /* Subtle shadow */
+    -fx-transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
+
+.buttons:hover {
+    -fx-background-color: linear-gradient(to bottom, #008cc9, #0075b2); /* Slightly darker gradient for hover */
+    -fx-border-color: #005680; /* Darker border on hover */
+}
+
+.buttons:pressed {
+    -fx-background-color: linear-gradient(to bottom, #0075b2, #005680); /* Darkest gradient for pressed state */
+    -fx-effect: none; /* Remove shadow on press */
+    -fx-border-color: #003c57; /* Deep border color for pressed state */
+}
+
