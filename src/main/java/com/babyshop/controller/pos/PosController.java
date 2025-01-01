@@ -40,19 +40,21 @@ public class PosController implements Initializable, ProductInterface {
     @FXML
     private TableColumn<Item, String> itemColumn;
     @FXML
-    private TableColumn<Item, Double> priceColumn, quantityColumn, totalColumn;
+    private TableColumn<Item, Double> priceColumn, quantityColumn, totalColumn, discountColumn;
     @FXML
     private TextField searchField, productField, priceField, quantityField;
     @FXML
     private TextArea descriptionArea;
     @FXML
-    private TextField subTotalField,netPayableField;
+    private TextField subTotalField, netPayableField;
     @FXML
     private Button addButton, removeButton, paymentButton;
     @FXML
     private Label quantityLabel;
     @FXML
     private ObservableList<Item> ITEMLIST;
+    @FXML
+    private TextField discountField;
     private ProductModel productModel;
 
     private double xOffset = 0;
@@ -75,6 +77,7 @@ public class PosController implements Initializable, ProductInterface {
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        discountColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
         listTableView.setItems(ITEMLIST);
 
@@ -122,6 +125,7 @@ public class PosController implements Initializable, ProductInterface {
     private void showDetails(Product product) {
         if (product != null) {
             quantityField.setDisable(false);
+            discountField.setDisable(false);
             productField.setText(product.getProductName());
             priceField.setText(String.valueOf(product.getPrice()));
 
@@ -141,6 +145,7 @@ public class PosController implements Initializable, ProductInterface {
             priceField.setText("");
             quantityLabel.setText("");
             descriptionArea.setText("");
+            discountField.setText("0.0");
         }
     }
 
@@ -159,6 +164,7 @@ public class PosController implements Initializable, ProductInterface {
         resetQuantityField();
         quantityLabel.setText("Available: ");
         descriptionArea.setText("");
+        discountField.setText("0.0");
     }
 
     private void resetInvoice() {
@@ -196,8 +202,9 @@ public class PosController implements Initializable, ProductInterface {
             String productName = productField.getText();
             double unitPrice = Double.parseDouble(priceField.getText());
             double quantity = Double.parseDouble(quantityField.getText());
-            double total = unitPrice * quantity;
-            ITEMLIST.add(new Item(productName, unitPrice, quantity, total));
+            double discount = Double.parseDouble(discountField.getText());
+            double total = getRoundedOffValue(unitPrice * quantity * (1 - discount / 100));
+            ITEMLIST.add(new Item(productName, unitPrice, quantity, discount, total)); //added discount
             calculation();
 
             resetAdd();
@@ -215,8 +222,8 @@ public class PosController implements Initializable, ProductInterface {
             paymentButton.setDisable(false);
             double vat = (double) subTotalPrice;
             double netPayablePrice = Math.abs((subTotalPrice));
-            subTotalField.setText(String.valueOf(subTotalPrice));
-            netPayableField.setText(String.valueOf(netPayablePrice));
+            subTotalField.setText(String.valueOf(getRoundedOffValue(subTotalPrice)));
+            netPayableField.setText(String.valueOf(getRoundedOffValue(netPayablePrice)));
         }
     }
 
@@ -319,5 +326,10 @@ public class PosController implements Initializable, ProductInterface {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private double getRoundedOffValue(double value) {
+        String formattedValue = String.format("%.2f", value);
+        return Double.parseDouble(formattedValue);
     }
 }

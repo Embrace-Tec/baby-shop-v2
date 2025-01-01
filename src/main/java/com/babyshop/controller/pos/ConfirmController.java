@@ -27,17 +27,19 @@ public class ConfirmController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        retailLabel.setText("Change: $" + retail);
+        retailLabel.setText("Change: Rs." + retail);
 
-        StringBuilder details = new StringBuilder("Item Name\t\t" + "Cost\t\t" + "Quantity\t\t" + "Total\n");
+        StringBuilder details = new StringBuilder("Item Name\t\t\t" + "Cost\t\t" + "Quantity\t\t" + "Discount\t\t" + "Total\n");
 
         for (Item i : items) {
             details.append(i.getItemName())
-                    .append("\t\t\t")
+                    .append("\t\t")
                     .append(i.getUnitPrice())
-                    .append("\t\t\t")
+                    .append("\t\t")
                     .append(i.getQuantity())
-                    .append("\t\t\t")
+                    .append("\t\t")
+                    .append(i.getDiscount())
+                    .append("\t\t")
                     .append(i.getTotal())
                     .append("\n");
         }
@@ -54,8 +56,8 @@ public class ConfirmController implements Initializable {
     @FXML
     public void doneAction(ActionEvent event) {
         billingArea.setText("");
+        ((Node) (event.getSource())).getScene().getWindow().hide();
         PrintInvoice pi = new PrintInvoice(items);
         pi.generateReport();
-        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 }
