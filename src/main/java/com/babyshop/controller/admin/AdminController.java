@@ -149,8 +149,8 @@ public class AdminController implements Initializable {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
-//        setWindow(event);
-        loadPos();
+        setWindow(event);
+//        loadPos();
     }
 
     @FXML
@@ -211,7 +211,7 @@ public class AdminController implements Initializable {
 
     @FXML
     public void setWindow(ActionEvent event) throws Exception {
-//        ((Node) (event.getSource())).getScene().getWindow().hide();
+        ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
         Stage stage = new Stage();
         root.setOnMousePressed((MouseEvent e) -> {
@@ -225,7 +225,7 @@ public class AdminController implements Initializable {
         Scene scene = new Scene(root);
         stage.setTitle("අම්මා බබා");
         stage.getIcons().add(new Image("/images/logo.png"));
-//        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         stage.show();
     }
