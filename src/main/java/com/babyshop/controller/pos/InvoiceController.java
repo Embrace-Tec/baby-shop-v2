@@ -2,9 +2,11 @@ package com.babyshop.controller.pos;
 
 
 import com.babyshop.entity.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Timestamp;
+
 import com.babyshop.model.EmployeeModel;
 import com.babyshop.model.InvoiceModel;
 import com.babyshop.model.ProductModel;
@@ -59,12 +61,17 @@ public class InvoiceController implements Initializable {
         this.payment = payment;
     }
 
+    private double getRoundedOffValue(double value) {
+        String formattedValue = String.format("%.2f", value);
+        return Double.parseDouble(formattedValue);
+    }
+
     @FXML
     public void confirmAction(ActionEvent event) throws Exception {
 
         if (validateInput()) {
             double paid = Double.parseDouble(paidAmountField.getText().trim());
-            double retail =0;
+            double retail = getRoundedOffValue(paid - payment.getSubTotal());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(new Date());
 
