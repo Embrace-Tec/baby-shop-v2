@@ -154,8 +154,30 @@ public class EmployeeController implements Initializable, EmployeeInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        setWindow(event);
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    @FXML
+    public void setWindow(ActionEvent event) throws Exception {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        stage.setFullScreen(true);
+        root.setOnMousePressed((MouseEvent e) -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+        });
+        root.setOnMouseDragged((MouseEvent e) -> {
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
+        });
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -205,6 +227,7 @@ public class EmployeeController implements Initializable, EmployeeInterface {
         Scene scene = new Scene(root, width, height);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle(title);
+        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
         stage.show();

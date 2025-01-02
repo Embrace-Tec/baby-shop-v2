@@ -42,10 +42,10 @@ public class SupplierController implements Initializable, SupplierInterface {
     @FXML
     private Button editButton, deleteButton;
     private SupplierModel model;
-    
+
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     @FXML
     private Button menu;
     @FXML
@@ -54,7 +54,7 @@ public class SupplierController implements Initializable, SupplierInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model = new SupplierModel();
-        
+
         drawerAction();
         loadData();
 
@@ -66,7 +66,7 @@ public class SupplierController implements Initializable, SupplierInterface {
         supplierTable.setItems(SUPPLIERLIST);
 
         filterData();
-        
+
         editButton
                 .disableProperty()
                 .bind(Bindings.isEmpty(supplierTable.getSelectionModel().getSelectedItems()));
@@ -101,17 +101,17 @@ public class SupplierController implements Initializable, SupplierInterface {
         });
     }
 
-    private void loadData(){
-    
+    private void loadData() {
+
         if (!SUPPLIERLIST.isEmpty()) {
             SUPPLIERLIST.clear();
         }
-        
+
         SUPPLIERLIST.addAll(model.getSuppliers());
     }
-    
+
     private void drawerAction() {
-    
+
         TranslateTransition openNav = new TranslateTransition(new Duration(350), drawer);
         openNav.setToX(0);
         TranslateTransition closeNav = new TranslateTransition(new Duration(350), drawer);
@@ -128,18 +128,18 @@ public class SupplierController implements Initializable, SupplierInterface {
             }
         });
     }
-    
+
     @FXML
     public void adminAction(ActionEvent event) throws Exception {
         windows("/fxml/Admin.fxml", "Admin", event);
     }
-    
+
     @FXML
     public void productAction(ActionEvent event) throws Exception {
 
         windows("/fxml/Product.fxml", "Product", event);
     }
-    
+
     @FXML
     public void categoryAction(ActionEvent event) throws Exception {
 
@@ -148,8 +148,30 @@ public class SupplierController implements Initializable, SupplierInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        setWindow(event);
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    @FXML
+    public void setWindow(ActionEvent event) throws Exception {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        stage.setFullScreen(true);
+        root.setOnMousePressed((MouseEvent e) -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+        });
+        root.setOnMouseDragged((MouseEvent e) -> {
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
+        });
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -157,12 +179,12 @@ public class SupplierController implements Initializable, SupplierInterface {
 
         windows("/fxml/Sales.fxml", "Sales", event);
     }
-    
+
     @FXML
     public void reportAction(ActionEvent event) throws Exception {
         windows("/fxml/Report.fxml", "Report", event);
     }
-    
+
     @FXML
     public void staffAction(ActionEvent event) throws Exception {
         windows("/fxml/Employee.fxml", "Employee", event);
@@ -198,14 +220,15 @@ public class SupplierController implements Initializable, SupplierInterface {
         Scene scene = new Scene(root, width, height);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle(title);
+        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
         stage.show();
     }
-    
+
     @FXML
     public void addAction(ActionEvent event) throws Exception {
-    
+
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/supplier/Add.fxml"));
         Scene scene = new Scene(root);
         Stage stage = new Stage();
@@ -272,5 +295,5 @@ public class SupplierController implements Initializable, SupplierInterface {
 
         supplierTable.getSelectionModel().clearSelection();
     }
-    
+
 }

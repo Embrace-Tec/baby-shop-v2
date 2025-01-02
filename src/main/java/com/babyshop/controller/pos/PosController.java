@@ -311,6 +311,7 @@ public class PosController implements Initializable, ProductInterface {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Admin.fxml"));
         Stage stage = new Stage();
+        stage.setFullScreen(true);
         root.setOnMousePressed((MouseEvent e) -> {
             xOffset = e.getSceneX();
             yOffset = e.getSceneY();

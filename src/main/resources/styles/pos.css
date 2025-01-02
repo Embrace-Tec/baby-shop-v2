@@ -1,6 +1,6 @@
 
 .header{
-    -fx-background-color: #cc66ff;
+    -fx-background-color: #0098DB;
 }
 
 .header-label{
@@ -62,7 +62,7 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 80%;
     -fx-background-position: center;
-    -fx-background-color: #cc66ff;
+    -fx-background-color: #0098DB;
 }
 
 .logout-button:hover {
