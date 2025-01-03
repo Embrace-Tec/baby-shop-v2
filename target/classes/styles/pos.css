@@ -61,8 +61,8 @@
     -fx-background-image: url("../images/logout.png");
     -fx-background-repeat: no-repeat;
     -fx-background-size: 80%;
-    -fx-background-position: #0098DB;
-    -fx-background-color: #cc66ff;
+    -fx-background-position: center;
+    -fx-background-color: #0098DB;
 }
 
 .logout-button:hover {
