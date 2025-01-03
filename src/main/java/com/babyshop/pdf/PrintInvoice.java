@@ -169,13 +169,13 @@ public class PrintInvoice {
         thankYouParagraph.setSpacingBefore(10f);
         document.add(thankYouParagraph);
 
-        Font contactFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
+        Font contactFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
         Paragraph contactParagraph = new Paragraph("Contact: 0769144363", contactFont);
         contactParagraph.setAlignment(Element.ALIGN_CENTER);
         contactParagraph.setSpacingBefore(5f);
         document.add(contactParagraph);
 
-        Font copyrightFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
+        Font copyrightFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
         Paragraph copyrightParagraph = new Paragraph("Copyright (c) 2025 embracetec. All Rights Reserved.", copyrightFont);
         copyrightParagraph.setAlignment(Element.ALIGN_CENTER);
         copyrightParagraph.setSpacingBefore(5f);
