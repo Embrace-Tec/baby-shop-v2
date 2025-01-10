@@ -4,7 +4,7 @@ import com.babyshop.entity.Item;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +16,8 @@ import javax.print.attribute.standard.MediaPrintableArea;
 import javax.print.attribute.standard.OrientationRequested;
 import java.awt.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PrintInvoice {
 
@@ -34,7 +36,7 @@ public class PrintInvoice {
             document.open();
 
             addShopHeader(document);
-            addItemTable(document);
+            addItems(document);
             addFooter(document);
 
             document.close();
@@ -80,80 +82,77 @@ public class PrintInvoice {
     }
 
     private void addShopHeader(Document document) throws DocumentException {
-        Font shopFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.BLACK);
+        Font shopFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
         Paragraph shopName = new Paragraph("mom & baby", shopFont);
         shopName.setAlignment(Element.ALIGN_CENTER);
         document.add(shopName);
 
-        Font addressFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
-        Paragraph address = new Paragraph("mom & baby, Ketethanna,Kahawatta\nContact No: 074 30 30 174", addressFont);
+        Font addressFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.GRAY);
+        Paragraph address = new Paragraph("mom & baby, Ketethanna, Kahawatta\nContact No: 074 30 30 174", addressFont);
         address.setAlignment(Element.ALIGN_CENTER);
+        address.setSpacingAfter(5f);
         document.add(address);
+
+        shopName.setSpacingAfter(3f);
 
         LineSeparator separator = new LineSeparator();
         separator.setLineColor(BaseColor.GRAY);
         document.add(separator);
+        Font dateFont = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.DARK_GRAY);
+        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        Paragraph dateTime = new Paragraph("Date & Time: " + currentDateTime, dateFont);
+
+        dateTime.setAlignment(Element.ALIGN_RIGHT);
+
+        dateTime.setSpacingBefore(8f);
+        dateTime.setSpacingAfter(8f);
+
+        document.add(dateTime);
 
         document.add(new Paragraph(" "));
+
     }
 
-    private void addItemTable(Document document) throws DocumentException {
-        PdfPTable table = createItemTable();
-        document.add(table);
-    }
+    private void addItems(Document document) throws DocumentException {
+        Font itemFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.BLACK);
+        Font boldFont = new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD, BaseColor.BLACK);
 
-    private PdfPTable createItemTable() {
-        PdfPTable table = new PdfPTable(4);
-        table.setWidthPercentage(100);
-        table.setSpacingBefore(10f);
-        table.setSpacingAfter(10f);
+        Paragraph header = new Paragraph();
+        header.add(new Chunk("Item", boldFont));
+        header.add(new Chunk("                      ", itemFont));
+        header.add(new Chunk("Price", boldFont));
+        header.add(new Chunk("      ", itemFont));
+        header.add(new Chunk("Quantity", boldFont));
+        header.add(new Chunk("    ", itemFont));
+        header.add(new Chunk("Total", boldFont));
 
-        addTableHeader(table);
-        addTableRows(table);
-
-        return table;
-    }
-
-    private void addTableHeader(PdfPTable table) {
-        String[] headers = {"Item", "Price", "Quantity", "Total"};
-        Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
-
-        for (String header : headers) {
-            PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell.setBackgroundColor(BaseColor.DARK_GRAY);
-            cell.setPadding(8);
-            table.addCell(cell);
-        }
-        table.setHeaderRows(1);
-    }
-
-    private void addTableRows(PdfPTable table) {
-        Font cellFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
+        header.setSpacingAfter(3f);
+        LineSeparator separator = new LineSeparator();
+        separator.setLineColor(BaseColor.GRAY);
+        document.add(header);
+        document.add(separator);
 
         for (Item item : items) {
-            PdfPCell itemNameCell = new PdfPCell(new Phrase(item.getItemName(), cellFont));
-            PdfPCell priceCell = new PdfPCell(new Phrase(String.valueOf(item.getUnitPrice()), cellFont));
-            PdfPCell quantityCell = new PdfPCell(new Phrase(String.valueOf(item.getQuantity()), cellFont));
-            PdfPCell totalCell = new PdfPCell(new Phrase(String.valueOf(item.getTotal()), cellFont));
-
-            priceCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            quantityCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            totalCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-            table.addCell(itemNameCell);
-            table.addCell(priceCell);
-            table.addCell(quantityCell);
-            table.addCell(totalCell);
+            Paragraph itemParagraph = new Paragraph();
+            itemParagraph.add(new Chunk(item.getItemName(), itemFont));
+            itemParagraph.add(new Chunk("                      ", itemFont));
+            itemParagraph.add(new Chunk(String.valueOf(item.getUnitPrice()), itemFont));
+            itemParagraph.add(new Chunk("      ", itemFont));
+            itemParagraph.add(new Chunk(String.valueOf(item.getQuantity()), itemFont));
+            itemParagraph.add(new Chunk("    ", itemFont));
+            itemParagraph.add(new Chunk(String.valueOf(item.getTotal()), itemFont));
+            itemParagraph.setSpacingAfter(5f);
+            document.add(itemParagraph);
         }
     }
+
 
     private void addFooter(Document document) throws DocumentException {
         double grandTotal = items.stream()
                 .mapToDouble(Item::getTotal)
                 .sum();
 
-        Font totalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+        Font totalFont = new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD, BaseColor.BLACK);
         Paragraph totalParagraph = new Paragraph("Order Total: " + String.format("%.2f", grandTotal), totalFont);
         totalParagraph.setAlignment(Element.ALIGN_RIGHT);
         totalParagraph.setSpacingAfter(5f);
@@ -163,24 +162,25 @@ public class PrintInvoice {
         separator.setLineColor(BaseColor.BLACK);
         document.add(new Chunk(separator));
 
-        Font thankYouFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+        Font thankYouFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
         Paragraph thankYouParagraph = new Paragraph("Thank you, come again!", thankYouFont);
         thankYouParagraph.setAlignment(Element.ALIGN_CENTER);
         thankYouParagraph.setSpacingBefore(10f);
         document.add(thankYouParagraph);
 
-        Font contactFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
+        Font contactFont = new Font(Font.FontFamily.HELVETICA, 6, Font.ITALIC, BaseColor.GRAY);
         Paragraph contactParagraph = new Paragraph("Contact: 0769144363", contactFont);
         contactParagraph.setAlignment(Element.ALIGN_CENTER);
         contactParagraph.setSpacingBefore(5f);
         document.add(contactParagraph);
 
-        Font copyrightFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
+        Font copyrightFont = new Font(Font.FontFamily.HELVETICA, 6, Font.ITALIC, BaseColor.GRAY);
         Paragraph copyrightParagraph = new Paragraph("Copyright (c) 2025 embracetec. All Rights Reserved.", copyrightFont);
         copyrightParagraph.setAlignment(Element.ALIGN_CENTER);
         copyrightParagraph.setSpacingBefore(5f);
         document.add(copyrightParagraph);
     }
+
     private void addEmptyLine(Paragraph paragraph, int number) {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
