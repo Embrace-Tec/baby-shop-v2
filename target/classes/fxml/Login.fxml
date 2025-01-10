@@ -21,8 +21,9 @@
             <Insets bottom="5.0" left="10.0" right="10.0" top="0.0" />
          </padding>
          <children>
-            <Label alignment="CENTER" styleClass="tagline" text="Quality is the best business plan" />
-            <Label styleClass="tagline" text="We deal in that!">
+            <Label alignment="CENTER" styleClass="tagline" text="Caring for your little one's world" />
+            <Label styleClass="tagline" text="We bring joy to every tiny moment!">
+
                <VBox.margin>
                   <Insets bottom="50.0" />
                </VBox.margin>
@@ -41,6 +42,11 @@
                </VBox.margin>
             </Separator>
             <Separator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="250.0" />
+            <Label alignment="CENTER" styleClass="footer" text="© 2025 Embracetec. All rights reserved.">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
          </children>
       </VBox>
       <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="355.0" styleClass="right-box" HBox.hgrow="ALWAYS">

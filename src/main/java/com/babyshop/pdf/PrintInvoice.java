@@ -3,16 +3,19 @@ package com.babyshop.pdf;
 import com.babyshop.entity.Item;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javax.print.*;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.OrientationRequested;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class PrintInvoice {
 
@@ -23,7 +26,8 @@ public class PrintInvoice {
     }
 
     public void generateReport() {
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50); // Set page margins
+        Rectangle smallPage = new Rectangle(226.77f, 566.93f);
+        Document document = new Document(smallPage, 20, 20, 20, 20); // Adjust margins for small size
         String filePath = "Report.pdf";
         try (FileOutputStream fs = new FileOutputStream(filePath)) {
             PdfWriter.getInstance(document, fs);
@@ -35,23 +39,57 @@ public class PrintInvoice {
 
             document.close();
 
-            // Open the PDF file in the default viewer
             File file = new File(filePath);
             if (Desktop.isDesktopSupported() && file.exists()) {
-                Desktop.getDesktop().open(file);
+                Desktop.getDesktop().open(file); // Open the file if needed
             }
+
+            // Print the bill
+            printBill(file);
+
         } catch (DocumentException | FileNotFoundException e) {
-            e.printStackTrace(); // Log or handle the exception as needed
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace(); // Handle IO exceptions during file output stream operations
+            e.printStackTrace();
+        }
+    }
+
+    private void printBill(File file) {
+        try {
+            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+            if (printService == null) {
+                System.out.println("No default print service found.");
+                return;
+            }
+
+            DocPrintJob printJob = printService.createPrintJob();
+            FileInputStream fis = new FileInputStream(file);
+
+            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+
+            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
+            attributes.add(OrientationRequested.PORTRAIT);
+
+            printJob.print(document, attributes);
+
+            fis.close();
+        } catch (PrintException | IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void addShopHeader(Document document) throws DocumentException {
-        Font shopFont = new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD, BaseColor.BLACK);
-        Paragraph shopName = new Paragraph("Baby Shop", shopFont);
+        Font shopFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.BLACK);
+        Paragraph shopName = new Paragraph("mom & baby", shopFont);
         shopName.setAlignment(Element.ALIGN_CENTER);
         document.add(shopName);
+
+        Font addressFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
+        Paragraph address = new Paragraph("mom & baby, Ketethanna,Kahawatta\nContact No: 074 30 30 174", addressFont);
+        address.setAlignment(Element.ALIGN_CENTER);
+        document.add(address);
+
         LineSeparator separator = new LineSeparator();
         separator.setLineColor(BaseColor.GRAY);
         document.add(separator);
@@ -115,19 +153,34 @@ public class PrintInvoice {
                 .mapToDouble(Item::getTotal)
                 .sum();
 
-        Font footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, BaseColor.GRAY);
-        Paragraph footer = new Paragraph("Thank you for shopping with us!", footerFont);
-        footer.setAlignment(Element.ALIGN_CENTER);
-        document.add(footer);
-
         Font totalFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
-        Paragraph totalParagraph = new Paragraph("Grand Total: " + String.format("%.2f", grandTotal), totalFont);
+        Paragraph totalParagraph = new Paragraph("Order Total: " + String.format("%.2f", grandTotal), totalFont);
         totalParagraph.setAlignment(Element.ALIGN_RIGHT);
-        totalParagraph.setSpacingBefore(10f); // Add spacing before the total
+        totalParagraph.setSpacingAfter(5f);
         document.add(totalParagraph);
+
+        LineSeparator separator = new LineSeparator();
+        separator.setLineColor(BaseColor.BLACK);
+        document.add(new Chunk(separator));
+
+        Font thankYouFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+        Paragraph thankYouParagraph = new Paragraph("Thank you, come again!", thankYouFont);
+        thankYouParagraph.setAlignment(Element.ALIGN_CENTER);
+        thankYouParagraph.setSpacingBefore(10f);
+        document.add(thankYouParagraph);
+
+        Font contactFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
+        Paragraph contactParagraph = new Paragraph("Contact: 0769144363", contactFont);
+        contactParagraph.setAlignment(Element.ALIGN_CENTER);
+        contactParagraph.setSpacingBefore(5f);
+        document.add(contactParagraph);
+
+        Font copyrightFont = new Font(Font.FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GRAY);
+        Paragraph copyrightParagraph = new Paragraph("Copyright (c) 2025 embracetec. All Rights Reserved.", copyrightFont);
+        copyrightParagraph.setAlignment(Element.ALIGN_CENTER);
+        copyrightParagraph.setSpacingBefore(5f);
+        document.add(copyrightParagraph);
     }
-
-
     private void addEmptyLine(Paragraph paragraph, int number) {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
