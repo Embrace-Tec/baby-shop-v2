@@ -1,8 +1,44 @@
-# Default ignored files
+# Ignore IntelliJ IDEA specific files
+.idea/
+*.iml
+*.iws
+/out/
+
+# Ignore build files and logs
+/build/
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Maven/Gradle directories
+/.mvn/
+/target/
+/.gradle/
+/build/
+
+# Ignore JavaFX-related output files (e.g., compiled classes)
+*.class
+*.jar
+
+# Ignore user-specific configuration files
+/.idea/
 /shelf/
 /workspace.xml
-# Editor-based HTTP Client requests
 /httpRequests/
-# Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# Ignore temporary files and cache
+*.tmp
+*.swp
+*.bak
+*.pid
+*.seed
+
+# Ignore coverage reports
+/coverage/
+
+# Ignore dependencies or libraries copied during runtime
+/lib/

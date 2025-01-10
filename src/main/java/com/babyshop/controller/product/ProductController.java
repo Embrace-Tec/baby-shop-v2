@@ -48,7 +48,7 @@ public class ProductController implements Initializable, ProductInterface {
     @FXML
     private TableColumn<Product, Long> idColumn;
     @FXML
-    private TableColumn<Product, String> categoryColumn,nameColumn, supplierColumn, descriptionColumn;
+    private TableColumn<Product, String> categoryColumn, nameColumn, supplierColumn, descriptionColumn;
     @FXML
     private TableColumn<Product, Double> priceColumn, quantityColumn;
     @FXML
@@ -201,8 +201,29 @@ public class ProductController implements Initializable, ProductInterface {
 
     @FXML
     public void purchaseAction(ActionEvent event) throws Exception {
+        setWindow(event);
+//        windows("/fxml/Purchase.fxml", "Purchase", event);
+    }
 
-        windows("/fxml/Purchase.fxml", "Purchase", event);
+    @FXML
+    public void setWindow(ActionEvent event) throws Exception {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
+        Stage stage = new Stage();
+        root.setOnMousePressed((MouseEvent e) -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+        });
+        root.setOnMouseDragged((MouseEvent e) -> {
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
+        });
+        Scene scene = new Scene(root);
+        stage.setTitle("අම්මා බබා");
+        stage.getIcons().add(new Image("/images/logo.png"));
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
