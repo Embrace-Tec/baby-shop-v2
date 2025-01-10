@@ -17,7 +17,6 @@ Thumbs.db
 /target/
 /.gradle/
 /build/
-
 # Ignore JavaFX-related output files (e.g., compiled classes)
 *.class
 *.jar
@@ -29,7 +28,6 @@ Thumbs.db
 /httpRequests/
 /dataSources/
 /dataSources.local.xml
-
 # Ignore temporary files and cache
 *.tmp
 *.swp
