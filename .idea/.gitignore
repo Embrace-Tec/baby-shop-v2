@@ -37,6 +37,8 @@ Thumbs.db
 *.pid
 *.seed
 
+
+
 # Ignore coverage reports
 /coverage/
 
