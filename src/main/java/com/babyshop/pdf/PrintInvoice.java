@@ -43,11 +43,10 @@ public class PrintInvoice {
 
             File file = new File(filePath);
             if (Desktop.isDesktopSupported() && file.exists()) {
-                Desktop.getDesktop().open(file); // Open the file if needed
+                Desktop.getDesktop().open(file);
             }
 
-            // Print the bill
-            printBill(file);
+//            printBill(file);
 
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
