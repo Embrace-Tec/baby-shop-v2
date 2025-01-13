@@ -8,6 +8,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.print.PrinterJob;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 
 import javax.print.*;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -17,7 +22,11 @@ import javax.print.attribute.standard.OrientationRequested;
 import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 public class PrintInvoice {
 
@@ -30,7 +39,7 @@ public class PrintInvoice {
     public void generateReport() {
         Rectangle smallPage = new Rectangle(226.77f, 566.93f);
         Document document = new Document(smallPage, 20, 20, 20, 20); // Adjust margins for small size
-        String filePath = "Report.pdf";
+        String filePath = "Report " + LocalDateTime.now() + ".pdf";
         try (FileOutputStream fs = new FileOutputStream(filePath)) {
             PdfWriter.getInstance(document, fs);
             document.open();
@@ -43,10 +52,12 @@ public class PrintInvoice {
 
             File file = new File(filePath);
             if (Desktop.isDesktopSupported() && file.exists()) {
-                Desktop.getDesktop().open(file);
+//                Desktop.getDesktop().open(file);
+                System.out.println(file.getAbsolutePath());
+                System.out.println("file exists");
             }
 
-//            printBill(file);
+            printBill(file);
 
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
@@ -63,21 +74,68 @@ public class PrintInvoice {
                 return;
             }
 
-            DocPrintJob printJob = printService.createPrintJob();
-            FileInputStream fis = new FileInputStream(file);
+//            DocPrintJob printJob = printService.createPrintJob();
+//            FileInputStream fis = new FileInputStream(file);
+//
+//            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+//
+//            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+//            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
+//            attributes.add(OrientationRequested.PORTRAIT);
+//
+//            printJob.print(document, attributes);
+//
+//            fis.close();
 
-            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+            // Load the PDF using PDFBox
+            PDDocument document = PDDocument.load(file);
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
 
-            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
-            attributes.add(OrientationRequested.PORTRAIT);
+            int pageCount = document.getNumberOfPages();
 
-            printJob.print(document, attributes);
+            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
+                // Convert the current page of the PDF to an image
+                Image pdfImage = convertPdfPageToImage(pdfRenderer, pageNo);
 
-            fis.close();
+                // Display the image in an ImageView
+                ImageView imageView = new ImageView(pdfImage);
+                imageView.setFitWidth(400);
+                imageView.setPreserveRatio(true);
+
+//            StackPane root = new StackPane(imageView);
+//            Scene scene = new Scene(root, 500, 700);
+//            stage.setScene(scene);
+//            stage.setTitle("PDF Printer");
+//            stage.show();
+
+                // Print the PDF image
+                PrinterJob printerJob = PrinterJob.createPrinterJob();
+                if (printerJob != null /*&& printerJob.showPrintDialog(stage)*/) {
+                    boolean success = printerJob.printPage(imageView);
+                    if (success) {
+                        printerJob.endJob();
+                        System.out.println("Printed successfully!");
+                    } else {
+                        System.out.println("Failed to print.");
+                    }
+                } else {
+                    System.out.println("No printer found or print job cancelled.");
+
+                }
+            }
+
+
+            document.close();
         } catch (PrintException | IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private Image convertPdfPageToImage(PDFRenderer pdfRenderer, int pageIndex) throws Exception {
+        java.awt.image.BufferedImage awtImage = pdfRenderer.renderImageWithDPI(pageIndex, 300);
+        return javafx.embed.swing.SwingFXUtils.toFXImage(awtImage, null);
     }
 
     private void addShopHeader(Document document) throws DocumentException {
