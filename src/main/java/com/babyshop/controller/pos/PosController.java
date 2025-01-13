@@ -118,8 +118,8 @@ public class PosController implements Initializable, ProductInterface {
         if (!PRODUCTLIST.isEmpty()) {
             PRODUCTLIST.clear();
         }
-
         PRODUCTLIST.addAll(productModel.getProducts());
+        System.out.println(PRODUCTLIST);
     }
 
     private void showDetails(Product product) {
@@ -229,18 +229,31 @@ public class PosController implements Initializable, ProductInterface {
 
     @FXML
     public void paymentAction(ActionEvent event) throws Exception {
-
         Payment payment = new Payment(
                 Double.parseDouble(subTotalField.getText().trim()),
                 Double.parseDouble(netPayableField.getText().trim())
         );
 
-        ObservableList<Item> sold = listTableView.getItems();
+        ObservableList<Item> soldItems = listTableView.getItems();
+
+        for (Item item : soldItems) {
+            String productName = item.getItemName();
+            double soldQuantity = item.getQuantity();
+
+            for (Product product : PRODUCTLIST) {
+                if (product.getProductName().equals(productName)) {
+                    double updatedQuantity = product.getQuantity() - soldQuantity;
+                    product.setQuantity(updatedQuantity);
+                    productModel.updateProduct(product);
+                    break;
+                }
+            }
+        }
 
         FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Invoice.fxml")));
         InvoiceController controller = new InvoiceController();
         loader.setController(controller);
-        controller.setData(Double.parseDouble(netPayableField.getText().trim()), sold, payment);
+        controller.setData(Double.parseDouble(netPayableField.getText().trim()), soldItems, payment);
         Parent root = loader.load();
         Stage stage = new Stage();
         root.setOnMousePressed((MouseEvent e) -> {
@@ -259,8 +272,10 @@ public class PosController implements Initializable, ProductInterface {
         stage.setScene(scene);
         stage.showAndWait();
 
+        // Reset the interface
         resetInterface();
     }
+
 
     @FXML
     public void removeAction(ActionEvent event) {
@@ -311,7 +326,6 @@ public class PosController implements Initializable, ProductInterface {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Admin.fxml"));
         Stage stage = new Stage();
-        stage.setFullScreen(true);
         root.setOnMousePressed((MouseEvent e) -> {
             xOffset = e.getSceneX();
             yOffset = e.getSceneY();

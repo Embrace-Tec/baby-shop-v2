@@ -202,7 +202,7 @@ public class AdminController implements Initializable {
         Scene scene = new Scene(root, width, height);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle(title);
-        stage.setFullScreen(true);
+//        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
         stage.show();
@@ -223,7 +223,7 @@ public class AdminController implements Initializable {
         });
         Scene scene = new Scene(root);
         stage.setTitle("අම්මා බබා");
-        stage.setFullScreen(true);
+//        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);

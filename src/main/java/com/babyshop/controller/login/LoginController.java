@@ -102,7 +102,6 @@ public class LoginController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(root);
         stage.setTitle(title);
-        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
         stage.show();

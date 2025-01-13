@@ -210,7 +210,6 @@ public class ProductController implements Initializable, ProductInterface {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pos.fxml"));
         Stage stage = new Stage();
-        stage.setFullScreen(true);
         root.setOnMousePressed((MouseEvent e) -> {
             xOffset = e.getSceneX();
             yOffset = e.getSceneY();
@@ -278,7 +277,6 @@ public class ProductController implements Initializable, ProductInterface {
         Scene scene = new Scene(root, width, height);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle(title);
-        stage.setFullScreen(true);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
         stage.show();
