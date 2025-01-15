@@ -11,15 +11,16 @@ import javafx.collections.ObservableList;
 import javafx.print.PrinterJob;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 
+import javax.imageio.ImageIO;
 import javax.print.*;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.OrientationRequested;
+import javax.print.event.PrintJobAdapter;
+import javax.print.event.PrintJobEvent;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -66,71 +67,207 @@ public class PrintInvoice {
         }
     }
 
+//    private void printBill(File file) {
+//        try {
+//            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+//            if (printService == null) {
+//                System.out.println("No default print service found.");
+//                return;
+//            }
+//
+////            DocPrintJob printJob = printService.createPrintJob();
+////            FileInputStream fis = new FileInputStream(file);
+////
+////            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+////
+////            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+////            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
+////            attributes.add(OrientationRequested.PORTRAIT);
+////
+////            printJob.print(document, attributes);
+////
+////            fis.close();
+//
+//            // Load the PDF using PDFBox
+//            PDDocument document = PDDocument.load(file);
+//            PDFRenderer pdfRenderer = new PDFRenderer(document);
+//
+//            int pageCount = document.getNumberOfPages();
+//
+//            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
+//                // Convert the current page of the PDF to an image
+//                Image pdfImage = convertPdfPageToImage(pdfRenderer, pageNo);
+//
+//                // Display the image in an ImageView
+//                ImageView imageView = new ImageView(pdfImage);
+//                imageView.setFitWidth(400);
+//                imageView.setPreserveRatio(true);
+//
+////            StackPane root = new StackPane(imageView);
+////            Scene scene = new Scene(root, 500, 700);
+////            stage.setScene(scene);
+////            stage.setTitle("PDF Printer");
+////            stage.show();
+//
+//                // Print the PDF image
+//                PrinterJob printerJob = PrinterJob.createPrinterJob();
+//                if (printerJob != null /*&& printerJob.showPrintDialog(stage)*/) {
+//                    boolean success = printerJob.printPage(imageView);
+//                    if (success) {
+//                        printerJob.endJob();
+//                        System.out.println("Printed successfully!");
+//                    } else {
+//                        System.out.println("Failed to print.");
+//                    }
+//                } else {
+//                    System.out.println("No printer found or print job cancelled.");
+//
+//                }
+//            }
+//
+//
+//            document.close();
+//        } catch (PrintException | IOException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+//    private void printBill(File file) {
+//        try {
+//            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+//            if (printService == null) {
+//                System.out.println("No default print service found.");
+//                return;
+//            }
+//
+//            // Load the PDF using PDFBox
+//            PDDocument document = PDDocument.load(file);
+//            PDFRenderer pdfRenderer = new PDFRenderer(document);
+//
+//            // Get the dimensions of the thermal printer (58mm width is typical)
+//            float thermalPaperWidthMM = 58;
+//            float dpi = 203; // Typical DPI for thermal printers
+//            float thermalPaperWidthPixels = (thermalPaperWidthMM / 25.4f) * dpi;
+//
+//            // Create a print job
+//            DocPrintJob printJob = printService.createPrintJob();
+//
+//            // Iterate through PDF pages
+//            int pageCount = document.getNumberOfPages();
+//            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
+//                // Convert the current page of the PDF to an image
+//                BufferedImage pdfImage = pdfRenderer.renderImageWithDPI(pageNo, dpi);
+//
+//                // Scale the image to fit the thermal paper width
+//                BufferedImage scaledImage = scaleImageToWidth(pdfImage, (int) thermalPaperWidthPixels);
+//
+//                // Convert the image to a printable format
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                ImageIO.write(scaledImage, "png", baos);
+//                byte[] imageData = baos.toByteArray();
+//
+//                // Print the image
+//                Doc doc = new SimpleDoc(imageData, DocFlavor.BYTE_ARRAY.PNG, null);
+//                PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+//                attributes.add(new MediaPrintableArea(0, 0, thermalPaperWidthMM, scaledImage.getHeight() / dpi * 25.4f, MediaPrintableArea.MM));
+//
+//                printJob.print(doc, attributes);
+//            }
+//
+//            document.close();
+//            System.out.println("Printed successfully!");
+//
+//        } catch (IOException | PrintException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    private void printBill(File file) {
+//        try {
+////            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+//            PrintService printService = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.PDF, null)[0];
+//            if (printService == null) {
+//                System.out.println("No default print service found.");
+////                return;
+//            }
+//
+//            // Load the PDF using PDFBox
+//            PDDocument document = PDDocument.load(file);
+//
+//            // Create a print job
+//            DocPrintJob printJob = printService.createPrintJob();
+//
+//            // Iterate through PDF pages
+//            int pageCount = document.getNumberOfPages();
+//            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
+//                // Print the PDF page directly
+//                Doc doc = new SimpleDoc(new FileInputStream(file), DocFlavor.INPUT_STREAM.PDF, null);
+//                printJob.print(doc, new HashPrintRequestAttributeSet());
+//            }
+//
+//            document.close();
+//            System.out.println("Printed successfully!");
+//
+//        } catch (IOException | PrintException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void printBill(File file) {
         try {
-            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
-            if (printService == null) {
-                System.out.println("No default print service found.");
+            // Look up the default print service that supports PDF
+            PrintService[] printServices = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.PDF, null);
+            if (printServices.length == 0) {
+                System.out.println("No print service found that supports PDF.");
                 return;
             }
 
-//            DocPrintJob printJob = printService.createPrintJob();
-//            FileInputStream fis = new FileInputStream(file);
-//
-//            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
-//
-//            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-//            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
-//            attributes.add(OrientationRequested.PORTRAIT);
-//
-//            printJob.print(document, attributes);
-//
-//            fis.close();
-
             // Load the PDF using PDFBox
             PDDocument document = PDDocument.load(file);
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
 
-            int pageCount = document.getNumberOfPages();
+            // Create a print job
+            DocPrintJob printJob = printServices[0].createPrintJob();
 
-            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
-                // Convert the current page of the PDF to an image
-                Image pdfImage = convertPdfPageToImage(pdfRenderer, pageNo);
+            // Create a Doc object from the PDF file
+            Doc doc = new SimpleDoc(new FileInputStream(file), DocFlavor.INPUT_STREAM.PDF, null);
 
-                // Display the image in an ImageView
-                ImageView imageView = new ImageView(pdfImage);
-                imageView.setFitWidth(400);
-                imageView.setPreserveRatio(true);
+            // Set up print request attributes
+            PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 
-//            StackPane root = new StackPane(imageView);
-//            Scene scene = new Scene(root, 500, 700);
-//            stage.setScene(scene);
-//            stage.setTitle("PDF Printer");
-//            stage.show();
-
-                // Print the PDF image
-                PrinterJob printerJob = PrinterJob.createPrinterJob();
-                if (printerJob != null /*&& printerJob.showPrintDialog(stage)*/) {
-                    boolean success = printerJob.printPage(imageView);
-                    if (success) {
-                        printerJob.endJob();
-                        System.out.println("Printed successfully!");
-                    } else {
-                        System.out.println("Failed to print.");
-                    }
-                } else {
-                    System.out.println("No printer found or print job cancelled.");
-
+            // Add a listener to handle print job events
+            printJob.addPrintJobListener(new PrintJobAdapter() {
+                @Override
+                public void printJobCompleted(PrintJobEvent pje) {
+                    System.out.println("Print job completed.");
                 }
-            }
 
+                @Override
+                public void printJobFailed(PrintJobEvent pje) {
+                    System.out.println("Print job failed.");
+                }
+            });
 
+            // Print the document
+            printJob.print(doc, pras);
+
+            // Close the document
             document.close();
-        } catch (PrintException | IOException e) {
+            System.out.println("Printed successfully!");
+
+        } catch (IOException | PrintException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+    }
+    // Helper method to scale image to the specified width
+    private BufferedImage scaleImageToWidth(BufferedImage image, int width) {
+        int height = (int) (image.getHeight() * ((float) width / image.getWidth()));
+        BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.drawImage(image, 0, 0, width, height, null);
+        g2d.dispose();
+        return scaledImage;
     }
 
     private Image convertPdfPageToImage(PDFRenderer pdfRenderer, int pageIndex) throws Exception {
