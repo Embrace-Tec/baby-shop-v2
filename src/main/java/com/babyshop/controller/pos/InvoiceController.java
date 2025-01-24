@@ -44,6 +44,8 @@ public class InvoiceController implements Initializable {
 
     private double xOffset = 0;
     private double yOffset = 0;
+    private boolean firstCall = true;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -91,7 +93,18 @@ public class InvoiceController implements Initializable {
 
             for (Item i : items) {
                 Product p = productModel.getProductByName(i.getItemName());
-                double quantity = p.getQuantity() - i.getQuantity();
+
+                // Check if this is the first time updating quantity
+                double quantity;
+                if (isFirstTime(p)) { // Assume isFirstTime is a method to check the first-time condition
+                    quantity = (p.getQuantity() + i.getQuantity()) - i.getQuantity();
+                    System.out.println("First time");
+                    System.out.println(p.getQuantity() + " " + i.getQuantity() + " " + quantity);
+                } else {
+                    quantity = p.getQuantity() - i.getQuantity();
+                }
+
+                System.out.println(p.getQuantity() + " " + i.getQuantity() + " " + quantity);
                 p.setQuantity(quantity);
                 productModel.decreaseProduct(p);
 
@@ -130,6 +143,7 @@ public class InvoiceController implements Initializable {
 
     }
 
+
     private boolean validateInput() {
 
         String errorMessage = "";
@@ -152,6 +166,14 @@ public class InvoiceController implements Initializable {
 
             return false;
         }
+    }
+
+    private boolean isFirstTime(Product product) {
+        if (firstCall) {
+            firstCall = false;
+            return true;
+        }
+        return false; // Not the first time
     }
 
     @FXML

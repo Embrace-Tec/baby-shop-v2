@@ -1,6 +1,10 @@
 package com.babyshop.pdf;
-
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.babyshop.entity.Item;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
@@ -9,7 +13,6 @@ import com.itextpdf.text.pdf.draw.LineSeparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.print.PrinterJob;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -39,7 +42,7 @@ public class PrintInvoice {
     public void generateReport() {
         Rectangle smallPage = new Rectangle(226.77f, 566.93f);
         Document document = new Document(smallPage, 20, 20, 20, 20); // Adjust margins for small size
-        String filePath = "Report " + LocalDateTime.now() + ".pdf";
+        String filePath = "Report.pdf";
         try (FileOutputStream fs = new FileOutputStream(filePath)) {
             PdfWriter.getInstance(document, fs);
             document.open();
@@ -52,11 +55,10 @@ public class PrintInvoice {
 
             File file = new File(filePath);
             if (Desktop.isDesktopSupported() && file.exists()) {
-//                Desktop.getDesktop().open(file);
-                System.out.println(file.getAbsolutePath());
-                System.out.println("file exists");
+                Desktop.getDesktop().open(file); // Open the file if needed
             }
 
+            // Print the bill
             printBill(file);
 
         } catch (DocumentException | FileNotFoundException e) {
@@ -74,101 +76,129 @@ public class PrintInvoice {
                 return;
             }
 
-//            DocPrintJob printJob = printService.createPrintJob();
-//            FileInputStream fis = new FileInputStream(file);
-//
-//            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
-//
-//            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-//            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
-//            attributes.add(OrientationRequested.PORTRAIT);
-//
-//            printJob.print(document, attributes);
-//
-//            fis.close();
+            DocPrintJob printJob = printService.createPrintJob();
+            FileInputStream fis = new FileInputStream(file);
 
-            // Load the PDF using PDFBox
-            PDDocument document = PDDocument.load(file);
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            Doc document = new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
 
-            int pageCount = document.getNumberOfPages();
+            PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+            attributes.add(new MediaPrintableArea(0, 0, 58, 160, MediaPrintableArea.MM));
+            attributes.add(OrientationRequested.PORTRAIT);
 
-            for (int pageNo = 0; pageNo < pageCount; pageNo++) {
-                // Convert the current page of the PDF to an image
-                Image pdfImage = convertPdfPageToImage(pdfRenderer, pageNo);
+            printJob.print(document, attributes);
 
-                // Display the image in an ImageView
-                ImageView imageView = new ImageView(pdfImage);
-                imageView.setFitWidth(400);
-                imageView.setPreserveRatio(true);
-
-//            StackPane root = new StackPane(imageView);
-//            Scene scene = new Scene(root, 500, 700);
-//            stage.setScene(scene);
-//            stage.setTitle("PDF Printer");
-//            stage.show();
-
-                // Print the PDF image
-                PrinterJob printerJob = PrinterJob.createPrinterJob();
-                if (printerJob != null /*&& printerJob.showPrintDialog(stage)*/) {
-                    boolean success = printerJob.printPage(imageView);
-                    if (success) {
-                        printerJob.endJob();
-                        System.out.println("Printed successfully!");
-                    } else {
-                        System.out.println("Failed to print.");
-                    }
-                } else {
-                    System.out.println("No printer found or print job cancelled.");
-
-                }
-            }
-
-
-            document.close();
+            fis.close();
         } catch (PrintException | IOException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
-    private Image convertPdfPageToImage(PDFRenderer pdfRenderer, int pageIndex) throws Exception {
-        java.awt.image.BufferedImage awtImage = pdfRenderer.renderImageWithDPI(pageIndex, 300);
-        return javafx.embed.swing.SwingFXUtils.toFXImage(awtImage, null);
-    }
-
     private void addShopHeader(Document document) throws DocumentException {
-        Font shopFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
-        Paragraph shopName = new Paragraph("mom & baby", shopFont);
-        shopName.setAlignment(Element.ALIGN_CENTER);
-        document.add(shopName);
+        try {
+            String imgSrc = "src/main/resources/user.png";
 
-        Font addressFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.GRAY);
-        Paragraph address = new Paragraph("mom & baby, Ketethanna, Kahawatta\nContact No: 074 30 30 174", addressFont);
-        address.setAlignment(Element.ALIGN_CENTER);
-        address.setSpacingAfter(5f);
-        document.add(address);
+            // Create an Image object (iText 5)
+            com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance(imgSrc);
 
-        shopName.setSpacingAfter(3f);
+            // Scale the image to a smaller size (e.g., 100x100 pixels)
+            image.scaleToFit(50, 50);
 
-        LineSeparator separator = new LineSeparator();
-        separator.setLineColor(BaseColor.GRAY);
-        document.add(separator);
-        Font dateFont = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.DARK_GRAY);
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        Paragraph dateTime = new Paragraph("Date & Time: " + currentDateTime, dateFont);
+            // Center the image on the page
+            image.setAlignment(com.itextpdf.text.Image.ALIGN_CENTER);
 
-        dateTime.setAlignment(Element.ALIGN_RIGHT);
+            // Add the image to the document
+            document.add(image);
+            Font shopFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
+            Paragraph shopName = new Paragraph("mom & baby", shopFont);
+            shopName.setAlignment(Element.ALIGN_CENTER);
+            document.add(shopName);
 
-        dateTime.setSpacingBefore(8f);
-        dateTime.setSpacingAfter(8f);
+            // Add address
+            Font addressFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.GRAY);
+            Paragraph address = new Paragraph("mom & baby, Ketethanna, Kahawatta\nContact No: 074 30 30 174", addressFont);
+            address.setAlignment(Element.ALIGN_CENTER);
+            address.setSpacingAfter(5f);
+            document.add(address);
 
-        document.add(dateTime);
+            // Add separator
+            LineSeparator separator = new LineSeparator();
+            separator.setLineColor(BaseColor.GRAY);
+            document.add(separator);
 
-        document.add(new Paragraph(" "));
+            // Add date and time
+            Font dateFont = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.DARK_GRAY);
+            String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            Paragraph dateTime = new Paragraph("Date & Time: " + currentDateTime, dateFont);
+            dateTime.setAlignment(Element.ALIGN_RIGHT);
+            dateTime.setSpacingBefore(8f);
+            dateTime.setSpacingAfter(8f);
+            document.add(dateTime);
 
+            // Add empty line
+            document.add(new Paragraph(" "));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new DocumentException("Error loading logo image.", e);
+        }
     }
+
+//    private void addShopHeader(Document document) throws DocumentException {
+//        try {
+//            // Load the logo image from resources
+//            InputStream logoStream = getClass().getClassLoader().getResourceAsStream("user.png");
+//            if (logoStream == null) {
+//                throw new IOException("Logo image not found in resources.");
+//            }
+//
+//            // Read the image into a byte array
+//            byte[] logoBytes = logoStream.readAllBytes();
+//            // Create the Image object using ImageDataFactory (iText 7)
+//            com.itextpdf.io.image.ImageData logoData = ImageDataFactory.create(logoBytes);
+//            com.itextpdf.layout.element.Image logo = new com.itextpdf.layout.element.Image(logoData);
+//
+//            // Scale the image to fit the header
+//            logo.scaleToFit(100, 100); // Adjust the size as needed
+//
+//            // Center the image
+//            logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
+//
+//            // Add the logo to the document
+//            document.add(logo);
+//
+//            // Add shop name
+//            Font shopFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.BLACK);
+//            Paragraph shopName = new Paragraph("mom & baby", shopFont);
+//            shopName.setTextAlignment(TextAlignment.CENTER);
+//            document.add(shopName);
+//
+//            // Add address
+//            Font addressFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.GRAY);
+//            Paragraph address = new Paragraph("mom & baby, Ketethanna, Kahawatta\nContact No: 074 30 30 174", addressFont);
+//            address.setTextAlignment(TextAlignment.CENTER);
+//            address.setMarginBottom(5f);
+//            document.add(address);
+//
+//            // Add separator
+//            LineSeparator separator = new LineSeparator();
+//            separator.setLineColor(BaseColor.GRAY);
+//            document.add(separator);
+//
+//            // Add date and time
+//            Font dateFont = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.DARK_GRAY);
+//            String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+//            Paragraph dateTime = new Paragraph("Date & Time: " + currentDateTime, dateFont);
+//            dateTime.setTextAlignment(TextAlignment.RIGHT);
+//            dateTime.setMarginTop(8f);
+//            dateTime.setMarginBottom(8f);
+//            document.add(dateTime);
+//
+//            // Add empty line
+//            document.add(new Paragraph(" "));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new DocumentException("Error loading logo image.", e);
+//        }
+//    }
 
     private void addItems(Document document) throws DocumentException {
         Font itemFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.BLACK);
