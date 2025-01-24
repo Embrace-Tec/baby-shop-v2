@@ -95,7 +95,7 @@ public class PrintInvoice {
 
     private void addShopHeader(Document document) throws DocumentException {
         try {
-            String imgSrc = "src/main/resources/user.png";
+            String imgSrc = "src/main/resources/logo1.jpeg";
 
             // Create an Image object (iText 5)
             com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance(imgSrc);
