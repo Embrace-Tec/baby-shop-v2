@@ -59,7 +59,7 @@ public class PrintInvoice {
             }
 
             // Print the bill
-            printBill(file);
+//            printBill(file);
 
         } catch (DocumentException | FileNotFoundException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class PrintInvoice {
             com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance(imgSrc);
 
             // Scale the image to a smaller size (e.g., 100x100 pixels)
-            image.scaleToFit(50, 50);
+            image.scaleToFit(75, 75);
 
             // Center the image on the page
             image.setAlignment(com.itextpdf.text.Image.ALIGN_CENTER);
